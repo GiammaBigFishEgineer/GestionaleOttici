@@ -1,0 +1,378 @@
+{% extends 'html/index.html.twig' %}
+
+{% block content%}
+<div class="w-8/12 mx-auto mt-40">
+	<form action="{{ action }}" method="post">
+		<div class="flex flex-row gap-4 mb-20">
+			<label>Cliente corrente:
+				{{ cliente.fullname }}
+			</div>
+
+			<input type="hidden" name="id" value="{{ get.id }}">
+			<input type="hidden" name="client_id" value="{{ optometria.client_id ?? get.client_id }}">
+
+			<div class="flex flex-row gap-4 mb-20">
+				<div class="relative z-0 w-full group">
+					<input value="{{ optometria.data }}" type="date" name="data" id="data" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-dark dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required/>
+					<label for="data" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Data Scheda</label>
+				</div>
+
+				<div class="relative z-0 w-full group">
+					<select value="{{ optometria.user.fullname }}" type="text" name="user_id" id="user_id" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-dark dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+						<option value="">TODO</option>
+					</select>
+					<label for="user_id" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Esame effetuato da</label>
+				</div>
+
+				<div class="relative z-0 w-full group">
+					<input value="{{ optometria.data_ricetta }}" type="date" name="data_ricetta" id="data_ricetta" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-dark dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required/>
+					<label for="data_ricetta" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Data Ricetta</label>
+				</div>
+
+				<div class="relative z-0 w-full group">
+					<input value="{{ optometria.data_controllo }}" type="date" name="data_controllo" id="data_controllo" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-dark dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
+					<label for="data_controllo" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Data Prox. Contr.</label>
+				</div>
+
+				<div class="w-full group">
+					<label class="text-base text-gray-500 dark:text-gray-400">Et&agrave; cliente:
+						{{ cliente.eta }}</label>
+				</div>
+			</div>
+
+			<div class="flex flex-col md:flex-row mb-20 gap-16">
+				<div class="">
+					<div class="w-[200px] h-[200px] bg-black"></div>
+				</div>
+
+				<div class="flex items-center">
+					<label class="text-base text-gray-500 dark:text-gray-400 mb-4 w-full">Distanza interpup.</label>
+
+					<div class="grid grid-cols-4 gap-2 text-center">
+						<div></div>
+						<div>
+							<label>dx</label>
+						</div>
+						<div>
+							<label>sx</label>
+						</div>
+						<div>
+							<label>totale</label>
+						</div>
+
+						<div>
+							<label>LON</label>
+						</div>
+						<div>
+							<input value="{{ optometria.int_dx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center" class="outline outline-1 w-full rounded-sm text-center" name="int_dx_l">
+						</div>
+						<div>
+							<input name="int_sx_l" value="{{ optometria.int_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+						<div>
+							<input name="int_tot_l" value="{{ optometria.int_tot_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+						<div>
+							<label>VIC</label>
+						</div>
+						<div>
+							<input name="int_dx_v" value="{{ optometria.int_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="int_sx_v" value="{{ optometria.int_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+						<div>
+							<input name="int_tot_v" value="{{ optometria.int_tot_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+
+						<div>
+							<label>MED</label>
+						</div>
+						<div>
+							<input name="int_dx_m" value="{{ optometria.int_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="int_sx_m" value="{{ optometria.int_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+						<div>
+							<input name="int_tot_m" value="{{ optometria.int_tot_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+					</div>
+				</div>
+
+				<div class="">
+					<div class="w-[200px] h-[200px] bg-black"></div>
+				</div>
+			</div>
+
+			<div class="flex flex-col md:flex-row mb-20 text-center">
+				<div class="relative z-0 w-full group">
+					<div class="grid grid-cols-7 gap-1">
+						<div>
+							<label>sfero</label>
+						</div>
+						<div>
+							<label>clind</label>
+						</div>
+						<div>
+							<label>ax</label>
+						</div>
+						<div>
+							<label>prisma</label>
+						</div>
+						<div>
+							<label>base</label>
+						</div>
+						<div>
+							<label>addiz</label>
+						</div>
+						<div>
+							<label>visus</label>
+						</div>
+
+
+						<div>
+							<input name="sfero_dx_l" value="{{ optometria.sfero_dx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_dx_l" value="{{ optometria.Definitivo L Cilindro OD }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_dx_l" value="{{ optometria.ax_dx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="prisma_dx_l" value="{{ optometria.prisma_dx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="base_dx_l" value="{{ optometria.base_dx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="addiz_dx_l" value="{{ optometria.addiz_dx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_dx_l" value="{{ optometria.visus_dx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+
+						<div>
+							<input name="sfero_dx_v" value="{{ optometria.sfero_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_dx_v" value="{{ optometria.clind_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_dx_v" value="{{ optometria.ax_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="prisma_dx_v" value="{{ optometria.prisma_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="base_dx_v" value="{{ optometria.base_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="addiz_dx_v" value="{{ optometria.addiz_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_dx_v" value="{{ optometria.visus_dx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+
+						<div>
+							<input name="sfero_dx_m" value="{{ optometria.sfero_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_dx_m" value="{{ optometria.clind_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_dx_m" value="{{ optometria.ax_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="prisma_dx_m" value="{{ optometria.prisma_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="base_dx_m" value="{{ optometria.base_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="addiz_dx_m" value="{{ optometria.addiz_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_dx_m" value="{{ optometria.visus_dx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+					</div>
+				</div>
+
+				<div class="relative z-0 w-full md:w-[50%] my-4 md:my-0 flex flex-col gap-1">
+					<div>
+						<button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-base px-2">COPIA -></button>
+					</div>
+					<div>
+						<label>LONTANO</label>
+					</div>
+					<div>
+						<label>VICINO</label>
+					</div>
+
+					<div>
+						<label>MEDIA DISTANZA</label>
+					</div>
+				</div>
+
+				<div class="relative z-0 w-full group">
+					<div class="grid grid-cols-7 gap-1">
+						<div>
+							<label>sfero</label>
+						</div>
+						<div>
+							<label>clind</label>
+						</div>
+						<div>
+							<label>ax</label>
+						</div>
+						<div>
+							<label>prisma</label>
+						</div>
+						<div>
+							<label>base</label>
+						</div>
+						<div>
+							<label>addiz</label>
+						</div>
+						<div>
+							<label>visus</label>
+						</div>
+
+
+						<div>
+							<input name="sfero_sx_l" value="{{ optometria.sfero_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_sx_l" value="{{ optometria.clind_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_sx_l" value="{{ optometria.ax_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="prisma_sx_l" value="{{ optometria.prisma_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="base_sx_l" value="{{ optometria.base_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="addiz_sx_l" value="{{ optometria.addiz_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_sx_l" value="{{ optometria.visus_sx_l }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+
+						<div>
+							<input name="sfero_sx_v" value="{{ optometria.sfero_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_sx_v" value="{{ optometria.clind_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_sx_v" value="{{ optometria.ax_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="prisma_sx_v" value="{{ optometria.prisma_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="base_sx_v" value="{{ optometria.base_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="addiz_sx_v" value="{{ optometria.addiz_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_sx_v" value="{{ optometria.visus_sx_v }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+
+						<div>
+							<input name="sfero_sx_m" value="{{ optometria.sfero_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_sx_m" value="{{ optometria.clind_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_sx_m" value="{{ optometria.ax_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="prisma_sx_m" value="{{ optometria.prisma_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="base_sx_m" value="{{ optometria.base_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="addiz_sx_m" value="{{ optometria.addiz_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_sx_m" value="{{ optometria.visus_sx_m }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="mb-20">
+				<div class="flex flex-col items-center">
+					<label class="text-base text-gray-500 dark:text-gray-400 mb-4 w-full text-center">AUTOREFRATTOMETRO</label>
+
+					<div class="grid grid-cols-5 gap-2 text-center">
+						<div></div>
+						<div>
+							<label>sfero</label>
+						</div>
+						<div>
+							<label>clind</label>
+						</div>
+						<div>
+							<label>ax</label>
+						</div>
+						<div>
+							<label>visus</label>
+						</div>
+
+						<div>
+							<label>destro</label>
+						</div>
+						<div>
+							<input name="sfero_dx_ref" value="{{ optometria.sfero_dx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_dx_ref" value="{{ optometria.clind_dx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_dx_ref" value="{{ optometria.ax_dx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_dx_ref" value="{{ optometria.visus_dx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+
+						<div>
+							<label>sinistro</label>
+						</div>
+						<div>
+							<input name="sfero_sx_ref" value="{{ optometria.sfero_sx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="clind_sx_ref" value="{{ optometria.clind_sx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="ax_sx_ref" value="{{ optometria.ax_sx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+						<div>
+							<input name="visus_sx_ref" value="{{ optometria.visus_sx_ref }}" type="number" class="outline outline-1 w-full rounded-sm text-center">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full sm:w-auto px-8 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Salva</button>
+		</form>
+	</div>
+{% endblock content %}

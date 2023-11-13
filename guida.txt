@@ -1,0 +1,14 @@
+sessione
+RICHIESTE
+INPUT
+OUTPOUT
+PDO
+utilizzare una view per reinderizzare un template (twig)
+
+classe gestendo relazioni e query con db
+Usare classe User con costructor che prende tutte le colonne e fai setReset
+
+Realizzare un Wrapper per le richieste
+Realizzare Dispatcher prevenendo tutti i possibili errori
+Realizzare un Impostazione PDO per tutte le possibile funzioni ripetitive
+Posizionare Tabella Utenti Accessi con password Hashata+utente+token con riferimento id

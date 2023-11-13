@@ -1,0 +1,18 @@
+{
+    "require": {
+        "twig/twig": "^3.5",
+        "twig/string-extra": "^3.5",
+        "phpfastcache/phpfastcache": "^9.1",
+        "symfony/ux-twig-component": "^2.7",
+        "symfony/flex": "^2.2",
+        "katzgrau/klogger": "dev-master",
+        "mpdf/mpdf": "^8.1",
+        "codeinc/strip-accents": "^1.1"
+        
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true
+        }
+    }
+}

@@ -1,0 +1,220 @@
+<hr>
+
+<div style='align:right; text-align:right;'>
+    <h1>Scheda Optometrica</h1>
+    del {{ attribute(optometria, "Data Ricetta") }}
+    
+    <div>prescrizione di<div>
+
+    <div class="info-cliente">
+        Cliente: <div class="nome-cliente">{{ attribute(cliente, "Cliente") }}</div>
+        <div>C.F.: {{ attribute(cliente, "Codice Fiscale") }}</div>
+        <div>Telefono: {{ attribute(cliente, "Telefono") }}</div>
+        <div>Telefono Cellulare: {{ attribute(cliente, "Telefono Cellulare") }}</div>
+    </div>
+</div>
+
+<div class="tables-div">
+<div class="table-block">
+    Distanza Interpupillare:
+        <table class="center-table">
+            <thead>
+                <tr class="main-table-header">
+                    <th scope='col'>Distanza</th>
+                    <th scope='col'>Destro</th>
+                    <th scope='col'>Sinistro</th>
+                    <th scope='col'>Totale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope='row'>Lontano</th>
+                    <td>{{ attribute(optometria, "Definitivo L Distanza Interpupillare OD") }}</td>
+                    <td>{{ attribute(optometria, "Definitivo L Distanza Interpupillare OS") }}</td>
+                    <td>{{ attribute(optometria, "Definitivo L Distanza Interpupillare OO") }}</td>
+                </tr>
+                <tr>
+                    <th scope='row'>Medio</th>
+                    <td>{{ attribute(optometria, "Definitivo MD Distanza Interpupillare OD") }}</td>
+                    <td>{{ attribute(optometria, "Definitivo MD Distanza Interpupillare OS") }}</td>
+                    <td>{{ attribute(optometria, "Definitivo MD Distanza Interpupillare OO") }}</td>
+                </tr>
+                <tr>
+                    <th scope='row'>Vicino</th>
+                    <td>{{ attribute(optometria, "Definitivo V Distanza Interpupillare OD") }}</td>
+                    <td>{{ attribute(optometria, "Definitivo V Distanza Interpupillare OS") }}</td>
+                    <td>{{ attribute(optometria, "Definitivo V Distanza Interpupillare OO") }}</td>
+                </tr>
+            </tbody>
+        </table>
+</div>
+
+<div class="table-block">
+    <p style="display: flex; justify-content: space-between;">
+        <span style="margin-right: 120px">Occhio DX</span>
+        <span style="margin-left: 120px">Occhio SX</span>
+    </p>
+    <table class='center-table'>
+        <thead>
+        <tr class="main-table-header">
+            {# DX #}
+            <th scope='col'>Sfero</th>
+            <th scope='col'>Cilind</th>
+            <th scope='col'>Ax</th>
+            <th scope='col'>Prisma</th>
+            <th scope='col'>Base</th>
+            <th scope='col'>Addiz</th>
+            <th scope='col'>Visus</th>
+
+            {# <th scope='col'>Distanza</th> #}
+            <th scope='col'></th>
+            {# SX #}
+            <th scope='col'>Sfero</th>
+            <th scope='col'>Cilind</th>
+            <th scope='col'>Ax</th>
+            <th scope='col'>Prisma</th>
+            <th scope='col'>Base</th>
+            <th scope='col'>Addiz</th>
+            <th scope='col'>Visus</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {# DX #}
+            <td>{{ attribute(optometria, "Definitivo L Sfero OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Cilindro OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Asse OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Diottrie Prismatiche OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Posizione del Prisma OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Addizione OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Visus OD") }}</td>
+            <th>L</th>
+            {# SX #}
+            <td>{{ attribute(optometria, "Definitivo L Sfero OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Cilindro OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Asse OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Diottrie Prismatiche OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Posizione del Prisma OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Addizione OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Visus OS") }}</td>
+        </tr>
+        <tr>
+            {# DX #}
+            <td>{{ attribute(optometria, "Definitivo MD Sfero OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Cilindro OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Asse OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Diottrie Prismatiche OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Posizione del Prisma OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Addizione OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Visus OD") }}</td>
+            <th>M</th>
+            {# SX #}
+            <td>{{ attribute(optometria, "Definitivo MD Sfero OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Cilindro OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Asse OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Diottrie Prismatiche OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Posizione del Prisma OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Addizione OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Visus OS") }}</td>
+        </tr>
+        <tr>
+            {# DX #}
+            <td>{{ attribute(optometria, "Definitivo V Sfero OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Cilindro OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Asse OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Diottrie Prismatiche OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Posizione del Prisma OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Addizione OD") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Visus OD") }}</td>
+            <th>V</th>
+            {# SX #}
+            <td>{{ attribute(optometria, "Definitivo V Sfero OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Cilindro OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Asse OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Diottrie Prismatiche OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Posizione del Prisma OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Addizione OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Visus OS") }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+{# <div class="table-block">
+    
+    <table class='table'>
+        <thead>
+        <tr class="main-table-header">
+            <th scope='col'>Distanza</th>
+            <th scope='col'>Sfero</th>
+            <th scope='col'>Cilind</th>
+            <th scope='col'>Ax</th>
+            <th scope='col'>Prisma</th>
+            <th scope='col'>Base</th>
+            <th scope='col'>Addiz</th>
+            <th scope='col'>Visus</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Lontano</td>
+            <td>{{ attribute(optometria, "Definitivo L Sfero OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Cilindro OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Asse OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Diottrie Prismatiche OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Posizione del Prisma OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Addizione OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo L Visus OS") }}</td>
+        </tr>
+        <tr>
+            <td>Medio</td>
+            <td>{{ attribute(optometria, "Definitivo MD Sfero OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Cilindro OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Asse OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Diottrie Prismatiche OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Posizione del Prisma OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Addizione OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Visus OS") }}</td>
+        </tr>
+        <tr>
+            <td>Vicino</td>
+            <td>{{ attribute(optometria, "Definitivo V Sfero OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Cilindro OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Asse OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Diottrie Prismatiche OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo V Posizione del Prisma OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Addizione OS") }}</td>
+            <td>{{ attribute(optometria, "Definitivo MD Visus OS") }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div> #}
+
+<div class="table-block">
+    <table class='center-table'>
+        <thead>
+        <tr class="main-table-header">
+            <td></td>
+            <th scope='col'>Visus DX</th>
+            <th scope='col'>Binoc.</th>
+            <th scope='col'>Visus SX</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Naturale</th>
+                <td>{{ attribute(optometria, "Visus Dx Nat") }}</td>
+                <td>{{ attribute(optometria, "Visus Bin Nat") }}</td>
+                <td>{{ attribute(optometria, "Visus Sx Nat") }}</td>
+            </tr>
+            <tr>
+                <th>Corretto</th>
+                <td>{{ attribute(optometria, "Visus Dx Corr") }}</td>
+                <td>{{ attribute(optometria, "Visus Bin Corr") }}</td>
+                <td>{{ attribute(optometria, "Visus Sx Corr") }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</div>

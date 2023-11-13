@@ -1,0 +1,104 @@
+{% extends 'html/index.html.twig' %}
+
+{% block content%}
+	<!-- Page Header-->
+	<section class="mb-3 mb-lg-5">
+		<!-- Page Header-->
+		<div class="page-header">
+			<h1 class="page-heading">Lista clienti</h1>
+		</div>
+		<section>
+			<div class="card mb-4">
+				<div class="card-header">
+					<a href="/post_cliente" class="btn btn-primary" type="submit">Nuovo cliente</a>
+					<form action="{{ action }}" class="mt-3" method="get">
+
+						<div class="input-group mb-3">
+							<div class="md-form mt-0">
+								<input name="client_id" class="form-control" type="text" placeholder="Immetti un campo di ricerca" aria-label="Search">
+							</div><button type="submit" class="btn btn-success">Filtra</button>
+						</div>
+
+
+					</form>
+				</div>
+
+				<div class="card-body text-muted">
+
+
+                    <div class="mx-auto my-3 sk-folding-cube" id="table-loader">
+                      <div class="sk-cube1 sk-cube"></div>
+                      <div class="sk-cube2 sk-cube"></div>
+                      <div class="sk-cube4 sk-cube"></div>
+                      <div class="sk-cube3 sk-cube"></div>
+                    </div>
+
+					<table class="table" id="datatable1">
+					</table>
+				</div>
+
+				<script>
+
+                        function renderID(data, cell, row){
+                            return `<a href="/optometria?id=${data}}"> ${data} </a>`;
+                        }
+
+                        function renderButton(data, cell, row){
+                            return `
+                                <div class="d-flex align-items-center justify-content-between"><span class="me-3">{{ attribute(cliente, "Telefono Cellulare") }}</span>
+                                    <div>
+                                        <button class="btn-header-more" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                                        <div class="dropdown-menu dropdown-menu-end text-sm"><a class="dropdown-item" href="/post_cliente?id=${data}"><i class="far fa-edit opacity-5 me-2"></i>Modifica</a><a class="dropdown-item" href="/elimina_cliente?id=${data}"><i class="far fa-trash-alt opacity-5 me-2"></i>Elimina</a></div>
+                                    </div>
+                                </div>
+                                `
+                        }
+                        
+                        async function makeTable() { 
+                        let myTable = document.querySelector("#datatable1");
+
+                        const dataTable = new simpleDatatables.DataTable(".table", {
+                            
+                            searchable: false,
+                            sortable: false,    
+                        	fixedHeight: true,
+                            data: {
+                                "headings": ["Id", "Id Cliente", "Data", "Data Ricetta", "Data Controllo"],
+                                "data":
+                                [
+                                    {% for scheda in optometrie %}
+                                        [
+                                            "{{ attribute(scheda, "ID") }}",
+                                            "{{ attribute(scheda, "ID Cliente") }}",
+                                            "{{ attribute(scheda, "Data Rilevazione") }}",
+                                            "{{ attribute(scheda, "Data Ricetta")}}",
+                                            "{{ attribute(scheda, "Data Esame") }}",
+                                        ],
+                                    {% endfor %}
+                                ],},
+                                columns:
+                                    [
+                                        { select: 0, render: renderID }, 
+                                        { select: 1 }, 
+                                        { select: 2 }, 
+                                        { select: 3 }, 
+                                        { select: 4 },
+                                    ],
+                            })
+                        }
+
+                        document.addEventListener('DOMContentLoaded', function () {
+                            makeTable();
+                            document.getElementById("table-loader").style.display = 'none';
+                        });
+
+                    </script>
+
+			</div>
+
+		</section>
+	</section>
+
+{% endblock content %}
+
+

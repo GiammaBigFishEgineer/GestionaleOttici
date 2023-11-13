@@ -1,0 +1,51 @@
+body {
+    font-family: Arial;
+}
+
+hr {
+    color:#3399ff;
+}
+
+table {
+    border: 1;
+    border-spacing: 3px;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #cccccc;  
+    text-align: center; 
+}
+
+.tables-div{
+    margin-top: 20px;
+}
+
+.table-block{
+    text-align: center;
+    margin-top: 15px;
+}
+
+.center-table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hide-th {
+    
+}
+
+.main-table-header {
+    background-color: #cccccc;
+    color: #ffffff;
+}
+
+.info-cliente{
+    /* width: 320px; */
+    /* text-align: left; */
+    margin-top: 10px;
+}
+.nome-cliente {
+    font-weight: bold;
+}
+

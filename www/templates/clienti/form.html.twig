@@ -1,0 +1,74 @@
+{% extends 'html/index.html.twig' %}
+
+{% block content%}
+
+    <div class="w-50 mx-auto">
+        <form action="{{ action }}" method="post">
+
+            <div class="input-group mb-3">
+            <input type="hidden" value="{{ attribute(cliente, "ID") }}" name="id"> </input>
+                <input type="hidden" value="{{ attribute(cliente, "ID") }}" name="ID"> </input>
+                <span class="input-group-text" id="basic-addon1">Denominazione</span>
+                <input value="{{ attribute(cliente, "Cliente") }}" type="text" class="form-control" placeholder="Denominazione" name="Cliente" aria-label="Username" aria-describedby="basic-addon1">
+                {# <span class="input-group-text" id="basic-addon1">Cognome</span>
+                <input value="{{ cliente.cognome }}" type="text" class="form-control" placeholder="Cognome" name="cognome" aria-label="Username" aria-describedby="basic-addon1"> #}
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Stato Nascita</span>
+                <input value="{{ attribute(cliente, "Nazione") }}" type="text" class="form-control" placeholder="Stato Nascita" name="Nazione" aria-label="Username" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1">Città</span>
+                <input value="{{ attribute(cliente, "Localita") }}" type="text" class="form-control" placeholder="Città" name="Localita" aria-label="Username" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1">Provincia</span>
+                <input value="{{ attribute(cliente, "Provincia") }}" type="text" class="form-control" placeholder="Provincia" name="Provincia" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+
+            <div class="input-group mb-3">
+                <input value="{{ attribute(cliente, "Data di Nascita") }}" type="date" class="form-control" name="Data di Nascita" placeholder="A-m-g" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <span class="input-group-text" id="basic-addon2">Data Nascita</span>
+
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Sesso</span>
+                <select  class="form-select" name="Sesso" aria-label="Default select example">
+                    <option {% if attribute(cliente, "Sesso") == "M" %} selected {% endif %} value='M'>
+                    Maschio
+                    </option>
+
+                    <option {% if attribute(cliente, "Sesso") == "F" %} selected {% endif %} value='F'>
+                    Femmina
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon3">Codice Fiscale</span>
+                    <input value="{{ attribute(cliente, "Codice Fiscale") }}" type="text" class="form-control" name="Codice Fiscale" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+                <div class="form-text">Generato sui dati inseriti</div>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Numero di Telefono</span>
+                <input value="{{ attribute(cliente, "Telefono Cellulare") }}" type="number" class="form-control" placeholder="Numero Telefono" name="Telefono Cellulare" aria-label="Username" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1">Telefono Fisso</span>
+                <input value="{{ attribute(cliente, "Telefono") }}" type="number" class="form-control" placeholder="Telefono Fisso" name="Telefono" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Email</span>
+                <input value="{{ attribute(cliente, "Indirizzo Email") }}" type="email" name="Indirizzo Email" class="form-control" placeholder="Email" aria-label="Server">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Partita IVA</span>
+                <input value="{{ attribute(cliente, "Partita IVA") }}" type="text" name="Partita IVA" class="form-control" placeholder="Partita IVA" aria-label="Server">
+            </div>
+            <button type="submit" class="btn btn-primary mt-3 mb-5">Invia</button>
+
+        </form>
+    </div>
+
+
+{% endblock content %}
+
+

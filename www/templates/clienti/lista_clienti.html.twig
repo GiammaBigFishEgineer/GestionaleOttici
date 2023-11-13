@@ -1,0 +1,142 @@
+
+{% extends 'html/index.html.twig' %}
+
+{% block content%}
+    <style>
+        .dataTables_filter {
+            display: none;
+        }
+    </style>
+    <!-- Page Header-->
+    <section class="mb-3 mb-lg-5">
+        <!-- Page Header-->
+        <div class="page-header">
+            <h1 class="page-heading">Lista clienti</h1>
+        </div>
+        <section>
+            <div class="card mb-4">
+                <div class="card-header">
+
+
+
+
+                        <div class="row mt-3">
+                            <div class="col">
+                                Codice Fiscale<br>
+                                <input type="search" id="search2" name="search2" placeholder="Cerca..." />
+                            </div>
+                            <div class="col">
+                                Cliente<br>
+                                <input type="search" id="searchbox"  placeholder="Cerca...">
+                            </div>
+                            <div class="col">
+                                <span style="opacity:0;">I</span><br>
+                                <a href="/post_cliente" class="btn float-end btn-primary" type="submit">Nuovo cliente</a>
+                            </div>
+                        </div>
+
+
+
+                <div class="card-body text-muted">
+
+
+                    <table class="table" id="datatable3">
+                    </table>
+
+                    <script>
+                        function renderCliente(data, cell, row){
+                            return '<a href="/cliente?id=' + row.ID + '">' + data + '</a>'
+                        }
+
+                        function renderButton(data, cell, row){
+                            return `
+                                <div class="d-flex align-items-center justify-content-between"><span class="me-3">{{ attribute(cliente, "Telefono Cellulare") }}</span>
+                                    <div>
+                                        <button class="btn-header-more" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                                        <div class="dropdown-menu dropdown-menu-end text-sm">
+                                        <a class="dropdown-item" href="/cliente?id=${row.ID}"><i class="far fa-edit opacity-5 me-2"></i>Modifica</a>
+                                        <a class="dropdown-item" href="/elimina_cliente?id=${row.ID}"><i class="far fa-trash-alt opacity-5 me-2"></i>Elimina</a></div>
+                                    </div>
+                                </div>
+                                `
+                        }
+
+                        async function makeTable() {
+                            var table = $('#datatable3').DataTable({
+                                processing: true,
+                                serverSide: true,
+                                ajax: {
+                                    url: '/api/clients/list',
+                                    type: 'GET',
+                                    data: function(d) {
+                                        d.search2 = {
+                                            'value': $('#search2').val()
+                                        };
+                                    }
+                                },
+                                columns:
+                                    [
+                                        { data: 'Cliente', title: 'Cliente', sortable: false, render: renderCliente },
+                                        { data: 'Codice Fiscale', title: 'Codice Fiscale', sortable: false},
+                                        { data: 'Localita', title: 'Località', sortable: false },
+                                        { data: 'Provincia', title: 'Provincia', sortable: false },
+                                        { data: 'Indirizzo Email', title: 'Indirizzo Email', sortable: false },
+                                        { data: 'Telefono Cellulare', title: 'Telefono Cellulare', sortable: false },
+                                        { data: 'Ultima modifica', title: 'Ultima modifica', type: "date", format: "RFC_2822" },
+                                        { data: 'ID', sortable: false, render: renderButton },
+
+                                    ],
+                                language: {
+                                    search: 'Cliente',
+                                }
+                                });
+
+                            $("#searchbox").on("keyup search input paste cut", function() {
+                                table.search(this.value).draw();
+                            });
+
+                            // Aggiungiamo un listener all'evento "input" dell'input di ricerca
+                            var searchInput = document.getElementById('search2');
+                            searchInput.addEventListener('input', function() {
+                                // Otteniamo il valore dell'input
+                                var searchValue = searchInput.value;
+
+                                // Aggiorniamo i dati della data table tramite una richiesta Ajax al server
+                                $.ajax({
+                                    url: '/api/clients/list?search2=' + searchValue,
+                                    success: function(response) {
+                                        // Analizziamo i dati ricevuti e li inseriamo nella data table
+                                        var data = response.data;
+                                        table.clear().rows.add(data).draw();
+                                        console.log(data);
+                                    }
+                                });
+                            });
+                        }
+
+
+
+                        document.addEventListener('DOMContentLoaded', function () {
+                            let start = performance.now();
+
+
+                            makeTable();
+
+
+                            document.getElementById("table-loader").style.display = 'none';
+
+                            console.log("Table rendering execution time: " + (performance.now() - start) + "ms");
+                        });
+
+                    </script>
+
+                </div>
+            </div>
+
+        </section>
+    </section>
+
+{% endblock content %}
+
+
+

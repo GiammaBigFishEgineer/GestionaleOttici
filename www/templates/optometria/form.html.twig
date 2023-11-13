@@ -1,0 +1,528 @@
+{% extends 'html/index.html.twig' %}
+
+{% block content%}
+
+<style>
+	#back{
+		display: none;
+	}
+	#chartdiv {
+		width: 400px;
+		height: 200px;
+	}
+	#chartdiv2 {
+		width: 400px;
+		height: 200px;
+	}
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	input[type=number] {
+		-moz-appearance: textfield;
+	}
+</style>
+	<h2>Optometria {{ cliente.Cliente }}</h2>
+	<a href="/cliente?id={{ cliente.ID }}" class="btn btn-secondary float-end"><i class="bi bi-arrow-left"></i> Torna Indietro </a>
+
+	{% set file = app.request.schemeAndHttpHost ~ app.request.baseUrl ~ '/user_data/pdf/AN_Analisi_Visive/' ~ attribute(optometria, "ID") ~ '.pdf' %}
+	<div class="float-end">
+		<button id="print-btn" class="btn btn-primary" onclick="printJS('{{file}}')">
+			<i class="bi bi-printer-fill"></i>
+			Stampa
+		</button>
+		<a id="dl-btn" href="{{ file }}" class="btn btn-primary" download>
+			<i class="bi bi-download"></i>
+			Scarica
+		</a>
+
+
+		<form action="{{ action }}" method="post" novalidate>
+
+			<input type="hidden" value="{{ attribute(optometria, "ID") }}" name="ID"> </input>
+			<input type="hidden" name="id" value="{{ get.id }}">
+			<input type="hidden" name="ID Cliente" value="{{ attribute(optometria, "ID Cliente") ?? get.client_id }}">
+			<input type="hidden" name="client_id" value="{{ attribute(optometria, "ID Cliente") ?? get.client_id }}">
+
+
+
+
+				{# TODO: Convertire le date del DB da DateTime a Date #}
+				{# <select value="{{ optometria.cliente.Cliente }}" type="text" name="ID Cliente" id="user_id" class="form-select w-25" aria-label="Default select example">
+			<option selected>Utente</option>
+			<option value="1">Prova</option>
+		</select> #}
+
+				<div class="row mt-4 mb-5">
+					<div class="col">
+						<label for="exampleFormControlInput1" class="form-label">Data</label>
+						<input value="{{ attribute(optometria, "Data Rilevazione")|date('Y-m-d') }}" type="date" name="Data Rilevazione" class="form-control" placeholder="Data"  aria-describedby="basic-addon1">
+					</div>
+					<div class="col">
+						<label for="exampleFormControlInput1" class="form-label">Data Ricetta</label>
+						<input value="{{ attribute(optometria, "Data Ricetta")|date('Y-m-d') }}" type="date" name="Data Ricetta" id="data_ricetta" class="form-control" placeholder=""  aria-describedby="basic-addon1">
+					</div>
+					<div class="col">
+						<label for="exampleFormControlInput1" class="form-label">Data Controllo</label>
+						<input value="{{ attribute(optometria, "Data Esame")|date('Y-m-d') }}" type="date" name="Data Esame" id="data_controllo" class="form-control" placeholder=""  aria-describedby="basic-addon1">
+					</div>
+				</div>
+
+
+
+
+
+
+			{% if (cliente.getEta() != null and cliente.getEta() > 0) %}
+				<p>Età: {{ cliente.getEta() }}</p>
+			{% endif %}
+
+			<div class="row">
+				<div class="col">
+					<h6>Destra</h6>
+					{# <button type="button" onclick="reverse1()" class="btn btn-primary btn-sm" id="reverseSwitch1">Reverse</button> #}
+
+					<div style="opacity: 0;" class="btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-secondary active">
+							<input type="checkbox" id="reverse1" onclick="reverse(this)"> Reverse
+						</label>
+					</div>
+
+					<div id="chartdiv"></div>
+					<div class="d-none" id="chartdiv-reverse"></div>
+				</div>
+				<div class="col">
+					<table class="table w-100">
+						<p class="text-center">Distanza Interpup</p>
+						<thead>
+						<tr>
+							<th scope="col">Distanza</th>
+							<th scope="col">dx</th>
+							<th scope="col">sx</th>
+							<th scope="col">tot</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<th scope="row">Lontano</th>
+							<td><input value="{{ attribute(optometria, "Definitivo L Distanza Interpupillare OD") }}" type="number" onchange="updateTot()" name="Definitivo L Distanza Interpupillare OD" id="int_dx_l" class="form-control" lang="it"  aria-describedby="basic-addon1"/></td>
+							<td><input value="{{ attribute(optometria, "Definitivo L Distanza Interpupillare OS") }}" type="number" onchange="updateTot()" name="Definitivo L Distanza Interpupillare OS" id="int_sx_l" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input value="{{ attribute(optometria, "Definitivo L Distanza Interpupillare OO") }}" readonly name="Definitivo L Distanza Interpupillare OO" id="int_tot_l" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						<tr>
+							<th scope="row">Medio</th>
+							<td><input value="{{ attribute(optometria, "Definitivo MD Distanza Interpupillare OD") }}" type="number" onchange="updateTot()" name="Definitivo MD Distanza Interpupillare OD" id="int_dx_m" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input value="{{ attribute(optometria, "Definitivo MD Distanza Interpupillare OS") }}" type="number" onchange="updateTot()" name="Definitivo MD Distanza Interpupillare OS" id="int_sx_m" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input value="{{ attribute(optometria, "Definitivo MD Distanza Interpupillare OO") }}" readonly name="Definitivo MD Distanza Interpupillare OO" id="int_tot_m" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						<tr>
+							<th scope="row">Vicino</th>
+							<td><input value="{{ attribute(optometria, "Definitivo V Distanza Interpupillare OD") }}" type="number" onchange="updateTot()" name="Definitivo V Distanza Interpupillare OD" id="int_dx_v" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input value="{{ attribute(optometria, "Definitivo V Distanza Interpupillare OS") }}" type="number" onchange="updateTot()" name="Definitivo V Distanza Interpupillare OS" id="int_sx_v" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input value="{{ attribute(optometria, "Definitivo V Distanza Interpupillare OO") }}" readonly name="Definitivo V Distanza Interpupillare OO" id="int_tot_v" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col">
+					<h6>Sinistra</h6>
+
+					<div class="btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-secondary active">
+							<input type="checkbox" id="reverse2" onclick="testR(this);setNumberInputValue();"> Reverse
+						</label>
+					</div>
+
+					<style>
+						#chartdiv2{
+							position: relative;
+							z-index: 1;
+						}
+						.generato{
+							position: relative;
+							top: -70px; /* Altezza del topDiv */
+							z-index: 0;
+							width: 100%;
+							display: flex;
+							align-items: center;
+							font-size: 1rem;
+						}
+
+					</style>
+
+					<div id="chartdiv2"></div>
+					<div class="generato">
+						<span class="mx-auto" id="numeroGenerato"></span>
+					</div>
+
+					<div class="d-none" id="chartdiv2-reverse">
+
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<h4>Destro</h4>
+					<table class="table">
+						<thead>
+						<tr>
+							<th scope="col">Distanza</th>
+							<th scope="col">Sfero</th>
+							<th scope="col">Cilind</th>
+							<th scope="col">Ax</th>
+							<th scope="col">Prisma</th>
+							<th scope="col">Base</th>
+							<th scope="col">Addiz</th>
+							<th scope="col">Visus</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>Lontano</td>
+							<td><input name="Definitivo L Sfero OD" value="{{ attribute(optometria, "Definitivo L Sfero OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Cilindro OD" value="{{ attribute(optometria, "Definitivo L Cilindro OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input id="Gauge1_l" onchange="updateGauge();updateGaugeReverse();" name="Definitivo L Asse OD" value="{{ attribute(optometria, "Definitivo L Asse OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Diottrie Prismatiche OD" value="{{ attribute(optometria, "Definitivo L Diottrie Prismatiche OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Posizione del Prisma OD" value="{{ attribute(optometria, "Definitivo L Posizione del Prisma OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Addizione OD" value="{{ attribute(optometria, "Definitivo L Addizione OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Visus OD" value="{{ attribute(optometria, "Definitivo L Visus OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						<tr>
+							<td>Medio</td>
+							<td><input name="Definitivo MD Sfero OD" value="{{ attribute(optometria, "Definitivo MD Sfero OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Cilindro OD" value="{{ attribute(optometria, "Definitivo MD Cilindro OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input id="Gauge1_m" name="Definitivo MD Asse OD" onchange="updateGauge();updateGaugeReverse();" value="{{ attribute(optometria, "Definitivo MD Asse OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Diottrie Prismatiche OD" value="{{ attribute(optometria, "Definitivo MD Diottrie Prismatiche OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Posizione del Prisma OD" value="{{ attribute(optometria, "Definitivo MD Posizione del Prisma OD" ) }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Addizione OD" value="{{ attribute(optometria, "Definitivo MD Addizione OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Visus OD" value="{{ attribute(optometria, "Definitivo MD Visus OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						<tr>
+							<td>Vicino</td>
+							<td><input name="Definitivo V Sfero OD" value="{{ attribute(optometria, "Definitivo V Sfero OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Cilindro OD" value="{{ attribute(optometria, "Definitivo V Cilindro OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input id="Gauge1_v" name="Definitivo V Asse OD" onchange="updateGauge();updateGaugeReverse();" value="{{ attribute(optometria, "Definitivo V Asse OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Diottrie Prismatiche OD" value="{{ attribute(optometria, "Definitivo V Diottrie Prismatiche OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Posizione del Prisma OD" value="{{ attribute(optometria, "Definitivo V Posizione del Prisma OD" ) }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Addizione OD" value="{{ attribute(optometria, "Definitivo V Addizione OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Visus OD" value="{{ attribute(optometria, "Definitivo V Visus OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="col">
+					<h4>Sinistro</h4>
+					<table class="table">
+						<thead>
+						<tr>
+							<th scope="col">Distanza</th>
+							<th scope="col">Sfero</th>
+							<th scope="col">Cilind</th>
+							<th scope="col">Ax</th>
+							<th scope="col">Prisma</th>
+							<th scope="col">Base</th>
+							<th scope="col">Addiz</th>
+							<th scope="col">Visus</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>Lontano</td>
+							<td><input name="Definitivo L Sfero OS" value="{{ attribute(optometria, "Definitivo L Sfero OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Cilindro OS" value="{{ attribute(optometria, "Definitivo L Cilindro OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input id="Gauge2_l" onchange="updateGauge2();turnOffInverse();" name="Definitivo L Asse OS" value="{{ attribute(optometria, "Definitivo L Asse OS") }}" type="number" class="form-control ax"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Diottrie Prismatiche OS" value="{{ attribute(optometria, "Definitivo L Diottrie Prismatiche OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Posizione del Prisma OS" value="{{ attribute(optometria, "Definitivo L Posizione del Prisma OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Addizione OS" value="{{ attribute(optometria, "Definitivo L Addizione OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo L Visus OS" value="{{ attribute(optometria, "Definitivo L Visus OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						<tr>
+							<td>Medio</td>
+							<td><input name="Definitivo MD Sfero OS" value="{{ attribute(optometria, "Definitivo MD Sfero OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Cilindro OS" value="{{ attribute(optometria, "Definitivo MD Cilindro OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input id="Gauge2_m" onchange="updateGauge2();turnOffInverse();" name="Definitivo MD Asse OS" value="{{ attribute(optometria, "Definitivo MD Asse OS") }}" type="number" class="form-control ax"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Diottrie Prismatiche OS" value="{{ attribute(optometria, "Definitivo MD Diottrie Prismatiche OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Posizione del Prisma OS" value="{{ attribute(optometria, "Definitivo MD Posizione del Prisma OS" ) }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Addizione OS" value="{{ attribute(optometria, "Definitivo MD Addizione OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo MD Visus OS" value="{{ attribute(optometria, "Definitivo MD Visus OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						<tr>
+							<td>Vicino</td>
+							<td><input name="Definitivo V Sfero OS" value="{{ attribute(optometria, "Definitivo V Sfero OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Cilindro OS" value="{{ attribute(optometria, "Definitivo V Cilindro OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input id="Gauge2_v" onchange="updateGauge2();turnOffInverse();" name="Definitivo V Asse OS" value="{{ attribute(optometria, "Definitivo V Asse OS") }}" type="number" class="form-control ax"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Diottrie Prismatiche OS" value="{{ attribute(optometria, "Definitivo V Diottrie Prismatiche OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Posizione del Prisma OS" value="{{ attribute(optometria, "Definitivo V Posizione del Prisma OS" ) }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Addizione OS" value="{{ attribute(optometria, "Definitivo V Addizione OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+							<td><input name="Definitivo V Visus OS" value="{{ attribute(optometria, "Definitivo V Visus OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="container mt-5">
+				<div class="row">
+
+					<h3 class="text-center mb-3">Test Preliminari</h3>
+					<div class="col mx-1">
+						<table class="table">
+							<thead>
+							<tr>
+								<td></td>
+								<td>Dominante</td>
+								<td>Forie nat.</td>
+								<td>Forie corr.</td>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>Lontano</td>
+								<td><input name="Occhio Dominante Lontano" value="{{ attribute(optometria, "Occhio Dominante Lontano") }}" type="text" class="form-control"/></td>
+								<td><input name="Forie L Nat" value="{{ attribute(optometria, "Forie L Nat") }}" type="text" class="form-control"/></td>
+								<td><input name="Forie L Corr" value="{{ attribute(optometria, "Forie L Corr") }}" type="text" class="form-control"/></td>
+							</tr>
+							<tr>
+								<td>Vicino</td>
+								<td><input name="Occhio Dominante Vicino" value="{{ attribute(optometria, "Occhio Dominante Vicino") }}" type="text" class="form-control"/></td>
+								<td><input name="Forie V Nat" value="{{ attribute(optometria, "Forie V Nat") }}" type="text" class="form-control"/></td>
+								<td><input name="Forie V Corr" value="{{ attribute(optometria, "Forie V Corr") }}" type="text" class="form-control"/></td>
+							</tr>
+							</tbody>
+
+						</table>
+					</div>
+					<div class="col mx-1">
+						<table class="table">
+							<thead>
+							<tr>
+								<td></td>
+								<td scope="col">Visus DX</td>
+								<td scope="col">Binoc.</td>
+								<td scope="col">Visus SX</td>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>Naturale</td>
+								<td><input name="Visus Dx Nat" value="{{ attribute(optometria, "Visus Dx Nat") }}" type="text" class="form-control"/></td>
+								<td><input name="Visus Bin Nat" value="{{ attribute(optometria, "Visus Bin Nat") }}" type="text" class="form-control"/></td></td>
+								<td><input name="Visus Sx Nat" value="{{ attribute(optometria, "Visus Sx Nat") }}" type="text" class="form-control"/></td></td>
+							</tr>
+							<tr>
+								<td>Corretto</td>
+								<td><input name="Visus Dx Corr" value="{{ attribute(optometria, "Visus Dx Corr") }}" type="text" class="form-control"/></td>
+								<td><input name="Visus Bin Corr" value="{{ attribute(optometria, "Visus Bin Corr") }}" type="text" class="form-control"/></td></td>
+								<td><input name="Visus Sx Corr" value="{{ attribute(optometria, "Visus Sx Corr") }}" type="text" class="form-control"/></td></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="col mx-1">
+						<p>Autorefrattometro</p>
+						<table class="table">
+							<thead>
+							<tr>
+								<td></td>
+								<td scope="col">Sfero</td>
+								<td scope="col">Cilind</td>
+								<td scope="col">AX</td>
+								<td scope="col">Visus</td>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>Destro</td>
+								<td><input name="Autorefrattometro Sfero OD" value="{{ attribute(optometria, "Autorefrattometro Sfero OD") }}" type="text" class="form-control"/></td>
+								<td><input name="Autorefrattometro Cilindro OD" value="{{ attribute(optometria, "Autorefrattometro Cilindro OD") }}" type="text" class="form-control"/></td>
+								<td><input name="Autorefrattometro Asse OD" value="{{ attribute(optometria, "Autorefrattometro Asse OD") }}" type="text" class="form-control"/></td>
+								<td><input name="Autorefrattometro Visus OD" value="{{ attribute(optometria, "Autorefrattometro Visus OD") }}" type="text" class="form-control"/></td>
+							</tr>
+							<tr>
+								<td>Sinistro</td>
+								<td><input name="Autorefrattometro Sfero OS" value="{{ attribute(optometria, "Autorefrattometro Sfero OS") }}" type="text" class="form-control"/></td>
+								<td><input name="Autorefrattometro Cilindro OS" value="{{ attribute(optometria, "Autorefrattometro Cilindro OS") }}" type="text" class="form-control"/></td>
+								<td><input name="Autorefrattometro Asse OS" value="{{ attribute(optometria, "Autorefrattometro Asse OS") }}" type="text" class="form-control"/></td>
+								<td><input name="Autorefrattometro Visus OS" value="{{ attribute(optometria, "Autorefrattometro Visus OS") }}" type="text" class="form-control"/></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- Button trigger modal -->
+			<div class="card p-2">
+				<div class="h2 my-2 text-center fw-bold">Cheratometria</div>
+				<div class="container">
+					<div class="row">
+						<div class="col mx-3">
+							<div class="h3 fw-bold">Destro</div>
+
+							<table class="table">
+								<thead>
+								<tr>
+									<th class="fw-bold" scope="col"></th>
+									<th scope="col">mm</th>
+									<th scope="col">Diottrie</th>
+									<th scope="col">Meridiani</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>Raggio 1</td>
+									<td><input name="K Raggio 1 OD" value="{{ attribute(optometria, "K Raggio 1 OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Diottrie 1 OD" value="{{ attribute(optometria, "K Diottrie 1 OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Meridiano 1 OD" value="{{ attribute(optometria, "K Meridiano 1 OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+								</tr>
+								<tr>
+									<td>Raggio 2</td>
+									<td><input name="K Raggio 2 OD" value="{{ attribute(optometria, "K Raggio 2 OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Diottrie 2 OD" value="{{ attribute(optometria, "K Diottrie 2 OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Meridiano 2 OD" value="{{ attribute(optometria, "K Meridiano 2 OD") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+								</tr>
+								</tbody>
+							</table>
+
+							<div class="input-group">
+								<span class="input-group-text">Cil. Corn</span>
+								<input type="number" class="form-control" name="K Astigmatico Corneale OD" value="{{ attribute(optometria, "K Astigmatico Corneale OD") }}">
+							</div>
+
+						</div>
+
+						<div class="col mx-3">
+							<div class="h3 fw-bold">Sinistro</div>
+							<table class="table">
+								<thead>
+								<tr>
+									<th class="fw-bold" scope="col"></th>
+									<th scope="col">mm</th>
+									<th scope="col">Diottrie</th>
+									<th scope="col">Meridiani</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>Raggio 1</td>
+									<td><input name="K Raggio 1 OS" value="{{ attribute(optometria, "K Raggio 1 OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Diottrie 1 OS" value="{{ attribute(optometria, "K Diottrie 1 OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Meridiano 1 OS" value="{{ attribute(optometria, "K Meridiano 1 OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+								</tr>
+								<tr>
+									<td>Raggio 2</td>
+									<td><input name="K Raggio 2 OS" value="{{ attribute(optometria, "K Raggio 2 OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Diottrie 2 OS" value="{{ attribute(optometria, "K Diottrie 2 OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+									<td><input name="K Meridiano 2 OS" value="{{ attribute(optometria, "K Meridiano 2 OS") }}" type="number" class="form-control"  aria-describedby="basic-addon1"/></td>
+								</tr>
+								</tbody>
+							</table>
+
+							<div class="input-group my-3">
+								<span class="input-group-text">Cil. Corn</span>
+								<input type="number" class="form-control" name="K Astigmatico Corneale OS" value="{{ attribute(optometria, "K Astigmatico Corneale OS") }}">
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="input-group mt-3">
+					<span class="input-group-text">Note</span>
+					<textarea class="form-control" name="Note Cheratometria" aria-label="With textarea">{{ attribute(optometria, "Note Cheratometria") }}</textarea>
+				</div>
+			</div>
+
+
+			<h2 class="text-danger">{{ session.error }}</h2>
+			<a class="btn btn-primary float-end m-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Salva</a>
+
+
+			<!-- Modal -->
+			<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="exampleModalLabel">Salvataggio effettuato</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							Troverai alla prossima pagina i dettagli della tua optometria
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary float-end m-2">Continua</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</form>
+	</div>
+
+
+
+	<script>
+		$(document).ready(function(){
+			$('#conferma-modal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget) // Bottone che attiva il modale
+				var recipient = button.data('whatever') // Esempio di passaggio di dati
+				var modal = $(this)
+				modal.find('.modal-title').text('Conferma Salvataggio')
+			})
+		});
+	</script>
+
+	<script>
+		function setNumberInputValue() {
+			// seleziona l'elemento HTML del checkbox
+			const checkbox = document.getElementById("reverse2");
+			// seleziona tutti gli elementi HTML con la classe "ax"
+			const numberInputs = document.querySelectorAll(".ax");
+			// quando il checkbox viene cliccato
+			if(checkbox.checked){
+				// per ogni input, calcola il nuovo valore del numero
+				numberInputs.forEach((numberInput) => {
+					const newValue = Math.abs(Number(numberInput.value) - 180);
+
+					// imposta il nuovo valore dell'input
+					numberInput.value = newValue;
+				});
+			}else{
+				// per ogni input, calcola il nuovo valore del numero
+				numberInputs.forEach((numberInput) => {
+					const newValue = Math.abs(Number(numberInput.value) - 180);
+
+					// imposta il nuovo valore dell'input
+					numberInput.value = newValue;
+				});
+			}
+
+		}
+
+	</script>
+	<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+	<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://printjs-4de6.kxcdn.com/print.min.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+	<script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/optometria/js/gauge1.js" }}></script>
+	<script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/optometria/js/gauge2-reverse.js" }}></script>
+	{# <script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/optometria/js/gauge1-reverse.js" }}></script> #}
+	<script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/optometria/js/gauge2.js" }}></script>
+	{# <script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/optometria/js/gauge2-reverse.js" }}></script> #}
+	<script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/optometria/js/interpup.js" }}></script>
+	<script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/optometria/js/inverse.js" }}></script>
+	<script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/js/printdl.js" }}></script>
+
+{% endblock %}

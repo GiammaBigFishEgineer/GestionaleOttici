@@ -1,0 +1,41 @@
+<!DOCTYPE html>   
+<html>   
+  <head>  
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <title> Login Page </title>
+
+
+  </head> 
+
+  <body>
+    <h1>Login</h1>
+
+    <form action="/login" method="post">
+      <div class="container">
+        <label for="email"><b>Email: </b></label>
+        <input type="email" name="email" required>
+        
+        <br>
+        
+        <label for="password"><b>Password</b></label>
+        <input type="password" placeholder="" name="password" id="password1" required>
+
+        <button type="submit" id="submit">Login</button>
+
+        <br>
+        <label>
+          <input type="checkbox" checked="checked" name="remember"> Remember me
+        </label>
+      </div>
+    
+      <div class="container">
+        <span class="psw"><a href="/forgot_password">Forgot Password?</a></span>
+      </div>
+      
+      <p>Don't have an account? <a href="/signup">Register</a> </p>
+
+    </form>
+
+  </body>
+     
+</html>  

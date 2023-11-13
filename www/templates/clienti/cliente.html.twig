@@ -1,0 +1,137 @@
+{% extends 'html/index.html.twig' %}
+
+    {% block content %}
+            <div class="mb-4 col-sm-6 col-lg-3 mb-4 w-100">
+
+                {# Anagrafica #}
+                <div id="anagrafica" class="">
+
+                    {% set file = app.request.schemeAndHttpHost ~ app.request.baseUrl ~ '/user_data/pdf/AN_Clienti/' ~ attribute(cliente, "ID") ~ '.pdf' %}
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="print-btn" onclick="printJS('{{file}}')">
+                            <i class="bi bi-printer-fill"></i>
+                            Stampa
+                        </button>
+
+                        <a href="{{ file }}" id="dl-btn" class="btn btn-primary" download>
+                            <i class="bi bi-download"></i>
+                            Scarica
+                        </a>
+                    </div>
+
+                    <div class="card p-3 w-60 mx-auto">
+                        <form action="/post_cliente" method="post">
+                            <div class="input-group mb-3">
+                                <input type="hidden" value="{{ attribute(cliente, "ID") }}" name="id"> </input>
+                                <input type="hidden" value="{{ attribute(cliente, "ID") }}" name="ID"> </input>
+                                <span class="input-group-text" id="basic-addon1">Denominazione</span>
+                                <input value="{{ attribute(cliente, "Cliente") }}" type="text" class="form-control" placeholder="Denominazione" name="Cliente" aria-label="Username" aria-describedby="basic-addon1">
+                                {# <span class="input-group-text" id="basic-addon1">Cognome</span>
+                        <input value="{{ cliente.cognome }}" type="text" class="form-control" placeholder="Cognome" name="cognome" aria-label="Username" aria-describedby="basic-addon1"> #}
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Stato Nascita</span>
+                                <input value="{{ attribute(cliente, "Nazione") }}" type="text" class="form-control" placeholder="Stato Nascita" name="Nazione" aria-label="Username" aria-describedby="basic-addon1">
+                                <span class="input-group-text" id="basic-addon1">Città</span>
+                                <input value="{{ attribute(cliente, "Località") }}" type="text" class="form-control" placeholder="Città" name="Localita" aria-label="Username" aria-describedby="basic-addon1">
+                                <span class="input-group-text" id="basic-addon1">Provincia</span>
+                                <input value="{{ attribute(cliente, "Provincia") }}" type="text" class="form-control" placeholder="Provincia" name="Provincia" aria-label="Username" aria-describedby="basic-addon1">
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <input value="{{ cliente.SimpleBirthday }}" type="date" class="form-control" name="Data di Nascita" placeholder="A-m-g" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <span class="input-group-text" id="basic-addon2">Data Nascita</span>
+
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Sesso</span>
+                                <select  class="form-select" name="Sesso" aria-label="Default select example">
+                                    <option {% if attribute(cliente, "Sesso") == "M" %} selected {% endif %} value='M'>
+                                        Maschio
+                                    </option>
+
+                                    <option {% if attribute(cliente, "Sesso") == "F" %} selected {% endif %} value='F'>
+                                        Femmina
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon3">Codice Fiscale</span>
+                                    <input value="{{ attribute(cliente, "Codice Fiscale") }}" type="text" class="form-control" name="Codice Fiscale" id="basic-url" aria-describedby="basic-addon3">
+                                </div>
+                                <div class="form-text">Generato sui dati inseriti</div>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Numero di Telefono</span>
+                                <input value="{{ attribute(cliente, "Telefono Cellulare") }}" type="number" class="form-control" placeholder="Numero Telefono" name="Telefono Cellulare" aria-label="Username" aria-describedby="basic-addon1">
+                                <span class="input-group-text" id="basic-addon1">Telefono Fisso</span>
+                                <input value="{{ attribute(cliente, "Telefono") }}" type="number" class="form-control" placeholder="Telefono Fisso" name="Telefono" aria-label="Username" aria-describedby="basic-addon1">
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Email</span>
+                                <input value="{{ attribute(cliente, "Indirizzo Email") }}" type="email" name="Indirizzo Email" class="form-control" placeholder="Email" aria-label="Server">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Partita IVA</span>
+                                <input value="{{ attribute(cliente, "Partita IVA") }}" type="text" name="Partita IVA" class="form-control" placeholder="Partita IVA" aria-label="Server">
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3 mb-5">Modifica</button>
+
+                        </form>
+                    </div>
+                </div>
+
+                {# Optometrie #}
+                <div id="optometrie" class="mt-4 d-none">
+
+                    <a href="/optometria?client_id={{ id_cliente }}" class="btn btn-primary mt-2 float-end">Nuova Optometria</a>
+
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            {# <th scope="col">Data</th> #}
+                            <th scope="col">Data Ricetta</th>
+                            <th scope="col">Prossimo Controllo</th>
+                            <th scope="col">Effetuato Da</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for optometria in optometrie %}
+                            <tr onclick="document.location = '/optometria?id={{ attribute(optometria, "ID") }}';" style="cursor: pointer">
+                                {# <td>{{ attribute(optometria, "Data") }}</td> #}
+                                <td>{{ attribute(optometria, "Data Ricetta")|date('Y-m-d') }}</td>
+                                <td>{{ attribute(optometria, "Data Esame")|date('Y-m-d') }}</td>
+                                <td>User</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+            <script src={{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ "/templates/clienti/cliente.js" }}></script>
+
+            {# Print.JS https://printjs.crabbly.com/ #}
+            <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="https://printjs-4de6.kxcdn.com/print.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+            <script src="{{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ '/templates/js/printdl.js' }}"></script>
+
+            {# <script type="text/javascript">
+                showCategory(`anagrafica`);
+            </script> #}
+
+
+        {% endblock content %}
+
+
+
+
